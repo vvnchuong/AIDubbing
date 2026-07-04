@@ -3,6 +3,8 @@ package com.tool.aidubbing.service;
 import com.tool.aidubbing.dto.request.UserCreationRequest;
 import com.tool.aidubbing.dto.response.UserResponse;
 import com.tool.aidubbing.entity.User;
+import com.tool.aidubbing.enums.ErrorCode;
+import com.tool.aidubbing.exception.AppException;
 import com.tool.aidubbing.mapper.UserMapper;
 import com.tool.aidubbing.repository.UserRepository;
 import lombok.AccessLevel;
@@ -35,7 +37,7 @@ public class UserService {
 
     public UserResponse getUserById(long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         return userMapper.toUserResponse(user);
     }

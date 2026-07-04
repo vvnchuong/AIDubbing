@@ -35,6 +35,9 @@ public class User {
     @Column(name = "quota_minutes_left")
     Integer quotaMinutesLeft = 10;
 
+    @Column(name = "quota_reset_at")
+    Instant quotaResetAt;
+
     @Enumerated(EnumType.STRING)
     UserRole role;
 
