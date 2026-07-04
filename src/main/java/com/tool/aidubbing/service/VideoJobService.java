@@ -37,9 +37,12 @@ public class VideoJobService {
 
         VideoJob videoJob = videoJobMapper.toVideoJob(request);
         videoJob.setUserId(user.getId());
+        VideoJob saved = videoJobRepository.save(videoJob);
 
-        return videoJobMapper
-                .toVideoJobResponse(videoJobRepository.save(videoJob));
+        user.setQuotaMinutesLeft((int) (user.getQuotaMinutesLeft() - videoDurationMinutes));
+        userRepository.save(user);
+
+        return videoJobMapper.toVideoJobResponse(saved);
     }
 
     public VideoJobResponse getJobById(long userId, long jobId) {
