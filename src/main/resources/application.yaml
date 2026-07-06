@@ -1,18 +1,24 @@
 server:
-  port: YOUR_SERVER_PORT
+  port: 8080
   servlet:
-    context-path: /YOUR_CONTEXT_PATH
+    context-path: /aidubbing
+  tomcat:
+    max-swallow-size: 100MB
+    max-http-form-post-size: 100MB
 
 spring:
   datasource:
     url: jdbc:postgresql://YOUR_DATABASE_HOST:YOUR_DATABASE_PORT/YOUR_DATABASE_NAME
     username: YOUR_DATABASE_USERNAME
     password: YOUR_DATABASE_PASSWORD
-
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
 
   security:
     oauth2:
@@ -27,8 +33,12 @@ spring:
 
 jwt:
   signerKey: "YOUR_JWT_SIGNER_KEY"
-  validDuration: YOUR_JWT_VALID_DURATION
-  refreshableDuration: YOUR_JWT_REFRESH_ABLE_DURATION
+  validDuration: 86400
+  refreshableDuration: 86400
 
 app:
+  upload-dir: YOUR_UPLOAD_DIR
   frontend-redirect-url: YOUR_FRONTEND_REDIRECT_URL
+  videolingo-dir: YOUR_VIDEOLINGO_DIR
+  job-output-dir: YOUR_JOB_OUTPUT_DIR
+  python-executable: YOUR_PYTHON_EXECUTABLE_PATH

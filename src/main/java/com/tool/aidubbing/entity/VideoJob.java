@@ -37,6 +37,9 @@ public class VideoJob {
     @Column(name = "target_lang")
     String targetLang;
 
+    @Column(name = "duration_minutes")
+    Double durationMinutes;
+
     @Column(name = "is_short")
     Boolean isShort = false;
 
@@ -45,6 +48,9 @@ public class VideoJob {
 
     @Column(name = "finished_at")
     Instant finishedAt;
+
+    @Column(name = "file_expires_at")
+    Instant fileExpiresAt;
 
     @PrePersist
     void prePersist() {

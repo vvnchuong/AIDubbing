@@ -21,6 +21,7 @@ public class FileStorageService {
     private String uploadDir;
 
     private static final long MAX_FILE_SIZE_BYTES = 2L * 1024 * 1024 * 1024; // 2GB
+    private static final String ALLOWED_EXTENSION = ".mp4";
 
     public String save(MultipartFile file) {
         if (file == null || file.isEmpty()) {
@@ -31,10 +32,16 @@ public class FileStorageService {
         }
 
         String originalName = file.getOriginalFilename();
-        String extension = "";
-        if (originalName != null && originalName.contains(".")) {
-            extension = originalName.substring(originalName.lastIndexOf("."));
+        if (originalName == null || !originalName.toLowerCase().endsWith(ALLOWED_EXTENSION)) {
+            throw new AppException(ErrorCode.INVALID_VIDEO_FILE);
         }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.equals("video/mp4")) {
+            throw new AppException(ErrorCode.INVALID_VIDEO_FILE);
+        }
+
+        String extension = ALLOWED_EXTENSION;
 
         String storedFileName = UUID.randomUUID() + extension;
 
@@ -47,10 +54,10 @@ public class FileStorageService {
             Path targetPath = dirPath.resolve(storedFileName);
             file.transferTo(targetPath);
 
-            log.info("Đã lưu file upload: {}", targetPath);
+            log.info("Uploaded file saved: {}", targetPath);
             return targetPath.toAbsolutePath().toString();
         } catch (IOException e) {
-            log.error("Lỗi lưu file upload", e);
+            log.error("Failed to save uploaded file", e);
             throw new AppException(ErrorCode.INVALID_VIDEO_FILE);
         }
     }

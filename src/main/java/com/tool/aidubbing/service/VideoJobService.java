@@ -37,6 +37,7 @@ public class VideoJobService {
 
         VideoJob videoJob = videoJobMapper.toVideoJob(request);
         videoJob.setUserId(user.getId());
+        videoJob.setDurationMinutes(videoDurationMinutes);
         VideoJob saved = videoJobRepository.save(videoJob);
 
         user.setQuotaMinutesLeft((int) (user.getQuotaMinutesLeft() - videoDurationMinutes));
@@ -50,7 +51,7 @@ public class VideoJobService {
                 .orElseThrow(() -> new AppException(ErrorCode.JOB_NOT_FOUND));
 
         if (!videoJob.getUserId().equals(userId))
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new AppException(ErrorCode.UNAUTHORIZED);
 
         return videoJobMapper.toVideoJobResponse(videoJob);
     }
