@@ -8,7 +8,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://YOUR_DATABASE_HOST:YOUR_DATABASE_PORT/YOUR_DATABASE_NAME
+    url: jdbc:postgresql://localhost:5432/YOUR_DATABASE_NAME
     username: YOUR_DATABASE_USERNAME
     password: YOUR_DATABASE_PASSWORD
   servlet:
@@ -38,7 +38,11 @@ jwt:
 
 app:
   upload-dir: YOUR_UPLOAD_DIR
-  frontend-redirect-url: YOUR_FRONTEND_REDIRECT_URL
+  frontend-redirect-url: http://localhost:3000/auth/callback
   videolingo-dir: YOUR_VIDEOLINGO_DIR
   job-output-dir: YOUR_JOB_OUTPUT_DIR
   python-executable: YOUR_PYTHON_EXECUTABLE_PATH
+  sepay:
+    bank-account: "YOUR_BANK_ACCOUNT_NUMBER"
+    bank-code: "YOUR_BANK_CODE"
+    code-prefix: "AIDUB"

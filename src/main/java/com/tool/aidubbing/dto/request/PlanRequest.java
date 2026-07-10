@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class PlanRequest {
 
     String name;
+    String detail;
     Integer monthlyMinutes;
     Integer price;
 

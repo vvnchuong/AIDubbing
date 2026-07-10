@@ -25,19 +25,33 @@ public class VideoJobService {
     UserRepository userRepository;
     VideoJobMapper videoJobMapper;
     FfprobeService ffprobeService;
+    FileStorageService fileStorageService;
 
     public VideoJobResponse createJob(long userId, VideoJobCreationRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        double videoDurationMinutes = ffprobeService.getVideoDurationMinutes(request.getInputPath());
+        String realInputPath = "upload".equals(request.getSourceType())
+                ? fileStorageService.resolveUploadedFilePath(request.getInputPath())
+                : request.getInputPath();
+
+        double videoDurationMinutes = ffprobeService.getVideoDurationMinutes(realInputPath);
 
         if (videoDurationMinutes > user.getQuotaMinutesLeft())
             throw new AppException(ErrorCode.QUOTA_EXCEEDED);
 
         VideoJob videoJob = videoJobMapper.toVideoJob(request);
         videoJob.setUserId(user.getId());
+        videoJob.setInputPath(realInputPath);
         videoJob.setDurationMinutes(videoDurationMinutes);
+
+        // --- ĐOẠN THÊM MỚI: Xử lý resolve path cho Reference Audio ---
+        if (request.getReferenceAudioPath() != null && !request.getReferenceAudioPath().isBlank()) {
+            String realAudioPath = fileStorageService.resolveUploadedAudioPath(request.getReferenceAudioPath());
+            videoJob.setReferenceAudioPath(realAudioPath);
+        }
+        // ------------------------------------------------------------
+
         VideoJob saved = videoJobRepository.save(videoJob);
 
         user.setQuotaMinutesLeft((int) (user.getQuotaMinutesLeft() - videoDurationMinutes));

@@ -38,8 +38,18 @@ public class VideoJobController {
     public ApiResponse<String> uploadVideo(
             @RequestParam("file") MultipartFile file) {
         return ApiResponse.<String>builder()
-                .message("Uploaded file successfully.")
+                .message("Uploaded video file successfully.")
                 .result(fileStorageService.save(file))
+                .build();
+    }
+
+    // --- ENDPOINT THÊM MỚI: Upload file audio mẫu ---
+    @PostMapping("/upload-audio")
+    public ApiResponse<String> uploadAudio(
+            @RequestParam("file") MultipartFile file) {
+        return ApiResponse.<String>builder()
+                .message("Uploaded audio file successfully.")
+                .result(fileStorageService.saveAudio(file))
                 .build();
     }
 

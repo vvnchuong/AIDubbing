@@ -14,6 +14,7 @@ public class PlanResponse {
 
     long id;
     String name;
+    String detail;
     Integer monthlyMinutes;
     Integer price;
 

@@ -78,7 +78,15 @@ public class JobPollerScheduler {
         Process process = pb.start();
 
         try (var reader = process.inputReader()) {
-            reader.lines().forEach(line -> log.info("[jobId={}] {}", job.getId(), line));
+            reader.lines().forEach(line -> {
+                log.info("[jobId={}] {}", job.getId(), line);
+
+                if (line.startsWith("[STEP]")) {
+                    String step = line.substring("[STEP]".length()).trim();
+                    job.setCurrentStep(step);
+                    videoJobRepository.save(job);
+                }
+            });
         }
 
         int exitCode = process.waitFor();
@@ -88,11 +96,13 @@ public class JobPollerScheduler {
             job.setOutputPath(outputPath);
             job.setFinishedAt(Instant.now());
             job.setFileExpiresAt(Instant.now().plus(30, java.time.temporal.ChronoUnit.MINUTES));
+            job.setCurrentStep(null);
             log.info("Finished processing jobId={}, outputPath={}", job.getId(), outputPath);
         } else {
             job.setStatus("FAILED");
             job.setFinishedAt(Instant.now());
             job.setFileExpiresAt(Instant.now().plus(30, java.time.temporal.ChronoUnit.MINUTES));
+            job.setCurrentStep(null);
             refundQuota(job);
             log.error("Failed processing jobId={}, exitCode={}", job.getId(), exitCode);
         }

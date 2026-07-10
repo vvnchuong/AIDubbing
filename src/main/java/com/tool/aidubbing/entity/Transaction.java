@@ -1,13 +1,16 @@
 package com.tool.aidubbing.entity;
 
+import com.tool.aidubbing.enums.TransactionStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @Table(name = "transactions")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -23,8 +26,14 @@ public class Transaction {
     @Column(nullable = false)
     Integer amount;
 
-    @Column(nullable = false)
-    String status;
+    @Column(nullable = false, unique = true)
+    String code;
+
+    @Column(name = "plan_id", nullable = false)
+    Long planId;
+
+    @Enumerated(EnumType.STRING)
+    TransactionStatus status;
 
     String provider;
 

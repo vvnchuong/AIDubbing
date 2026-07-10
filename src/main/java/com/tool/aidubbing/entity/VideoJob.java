@@ -1,5 +1,6 @@
 package com.tool.aidubbing.entity;
 
+import com.tool.aidubbing.enums.VoiceType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -39,6 +40,21 @@ public class VideoJob {
 
     @Column(name = "duration_minutes")
     Double durationMinutes;
+
+    @Column(name = "current_step")
+    String currentStep;
+
+    @Column(name = "voice_id")
+    String voiceId;
+
+    @Enumerated(EnumType.STRING)
+    VoiceType voiceType;
+
+    @Column(columnDefinition = "TEXT")
+    String promptExtra;
+
+    @Column(name = "reference_audio_path")
+    String referenceAudioPath;
 
     @Column(name = "is_short")
     Boolean isShort = false;

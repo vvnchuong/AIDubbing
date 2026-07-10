@@ -1,5 +1,6 @@
 package com.tool.aidubbing.dto.request;
 
+import com.tool.aidubbing.enums.VoiceType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,5 +14,9 @@ public class VideoJobCreationRequest {
     String sourceType;
     String inputPath;
     String targetLang;
+    String voiceId;
+    VoiceType voiceType;
+    String promptExtra;
+    String referenceAudioPath;
     Boolean isShort;
 }

@@ -20,6 +20,9 @@ public enum ErrorCode {
 
     PLAN_NOT_FOUND(5001, "Plan not found.", HttpStatus.NOT_FOUND),
     PLAN_HAS_EXISTED(5002, "Plan has existed.", HttpStatus.BAD_REQUEST),
+
+    TRANSACTION_NOT_FOUND(6001, "Transaction not found.", HttpStatus.NOT_FOUND),
+    TRANSACTION_ALREADY_PROCESSED(6002, "This transaction has already been processed.", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;

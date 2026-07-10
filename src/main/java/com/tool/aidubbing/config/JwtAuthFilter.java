@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 
 @Component
@@ -36,12 +35,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
 
-            IntrospectResponse introspect = authenticationService.introspect(
-                    IntrospectRequest.builder().token(token).build()
-            );
+            try {
+                IntrospectResponse introspect = authenticationService.introspect(
+                        IntrospectRequest.builder().token(token).build()
+                );
 
-            if (introspect.isValidated()) {
-                try {
+                if (introspect.isValidated()) {
                     SignedJWT signedJWT = SignedJWT.parse(token);
                     Long userId = Long.valueOf(signedJWT.getJWTClaimsSet().getSubject());
                     String role = (String) signedJWT.getJWTClaimsSet().getClaim("scope");
@@ -50,8 +49,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                     var authToken = new UsernamePasswordAuthenticationToken(userId, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                } catch (ParseException e) {
                 }
+            } catch (Exception e) {
+                // Token hết hạn, sai chữ ký, hoặc bất kỳ lỗi verify nào khác -
+                // KHÔNG để văng thành lỗi 500, chỉ coi như request này chưa đăng nhập.
+                // Để trống SecurityContext, các dòng .authenticated() trong SecurityConfig
+                // sẽ tự trả về đúng 401 cho FE nhận biết và đá về trang login.
+                SecurityContextHolder.clearContext();
             }
         }
 

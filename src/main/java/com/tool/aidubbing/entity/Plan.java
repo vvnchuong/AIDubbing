@@ -18,6 +18,9 @@ public class Plan {
     @Column(nullable = false)
     String name;
 
+    @Column
+    String detail;
+
     @Column(name = "monthly_minutes", nullable = false)
     Integer monthlyMinutes;
 

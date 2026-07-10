@@ -7,10 +7,7 @@ import com.tool.aidubbing.service.PlanService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +19,7 @@ public class PlanController {
 
     PlanService planService;
 
+    @PostMapping
     public ApiResponse<PlanResponse> createPlan(
             @RequestBody PlanRequest request) {
         return ApiResponse.<PlanResponse>builder()
@@ -30,6 +28,7 @@ public class PlanController {
                 .build();
     }
 
+    @GetMapping("/{planId}")
     public ApiResponse<PlanResponse> getPlan(
             @PathVariable("planId") long planId) {
         return ApiResponse.<PlanResponse>builder()
@@ -38,6 +37,7 @@ public class PlanController {
                 .build();
     }
 
+    @GetMapping
     public ApiResponse<List<PlanResponse>> getAllPlans() {
         return ApiResponse.<List<PlanResponse>>builder()
                 .message("Plans retrieved successfully.")
@@ -45,6 +45,7 @@ public class PlanController {
                 .build();
     }
 
+    @PutMapping("/{planId}")
     public ApiResponse<Void> updatePlan(
             @PathVariable("planId") long planId,
             @RequestBody PlanRequest request) {
@@ -54,6 +55,7 @@ public class PlanController {
                 .build();
     }
 
+    @DeleteMapping("/{planId}")
     public ApiResponse<Void> deletePlan(
             @PathVariable("planId") long planId) {
         planService.deletePlan(planId);
