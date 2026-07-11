@@ -1,6 +1,6 @@
 package com.tool.aidubbing.service;
 
-import com.tool.aidubbing.dto.request.PlanRequest;
+import com.tool.aidubbing.dto.PlanRequest;
 import com.tool.aidubbing.dto.response.PlanResponse;
 import com.tool.aidubbing.entity.Plan;
 import com.tool.aidubbing.enums.ErrorCode;

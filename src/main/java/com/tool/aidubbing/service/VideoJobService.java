@@ -5,6 +5,7 @@ import com.tool.aidubbing.dto.response.VideoJobResponse;
 import com.tool.aidubbing.entity.User;
 import com.tool.aidubbing.entity.VideoJob;
 import com.tool.aidubbing.enums.ErrorCode;
+import com.tool.aidubbing.enums.VideoJobStatus;
 import com.tool.aidubbing.exception.AppException;
 import com.tool.aidubbing.mapper.VideoJobMapper;
 import com.tool.aidubbing.repository.UserRepository;
@@ -44,13 +45,12 @@ public class VideoJobService {
         videoJob.setUserId(user.getId());
         videoJob.setInputPath(realInputPath);
         videoJob.setDurationMinutes(videoDurationMinutes);
+        videoJob.setStatus(VideoJobStatus.PENDING);
 
-        // --- ĐOẠN THÊM MỚI: Xử lý resolve path cho Reference Audio ---
         if (request.getReferenceAudioPath() != null && !request.getReferenceAudioPath().isBlank()) {
             String realAudioPath = fileStorageService.resolveUploadedAudioPath(request.getReferenceAudioPath());
             videoJob.setReferenceAudioPath(realAudioPath);
         }
-        // ------------------------------------------------------------
 
         VideoJob saved = videoJobRepository.save(videoJob);
 

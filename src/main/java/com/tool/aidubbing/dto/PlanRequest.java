@@ -1,4 +1,4 @@
-package com.tool.aidubbing.dto.request;
+package com.tool.aidubbing.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

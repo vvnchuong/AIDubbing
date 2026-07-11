@@ -1,4 +1,4 @@
-package com.tool.aidubbing.dto.response;
+package com.tool.aidubbing.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,10 +8,12 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class VoiceOption {
+public class SubtitleItem {
 
-    String id;
-    String label;
-    String previewAudioUrl;
+    int index;
+    Double start;
+    Double end;
+    String originalSub;
+    String translatedSub;
 
 }

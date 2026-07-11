@@ -1,11 +1,15 @@
 package com.tool.aidubbing.controller;
 
+import com.tool.aidubbing.dto.SubtitleItem;
 import com.tool.aidubbing.dto.request.VideoJobCreationRequest;
 import com.tool.aidubbing.dto.response.ApiResponse;
 import com.tool.aidubbing.dto.response.VideoJobResponse;
 import com.tool.aidubbing.enums.ErrorCode;
+import com.tool.aidubbing.enums.VideoJobStatus;
 import com.tool.aidubbing.exception.AppException;
+import com.tool.aidubbing.scheduler.JobPollerScheduler;
 import com.tool.aidubbing.service.FileStorageService;
+import com.tool.aidubbing.service.SubtitleService;
 import com.tool.aidubbing.service.VideoJobService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +33,8 @@ public class VideoJobController {
 
     VideoJobService videoJobService;
     FileStorageService fileStorageService;
+    SubtitleService subtitleService;
+    JobPollerScheduler jobPollerScheduler;
 
     private Long currentUserId() {
         return (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -38,18 +44,8 @@ public class VideoJobController {
     public ApiResponse<String> uploadVideo(
             @RequestParam("file") MultipartFile file) {
         return ApiResponse.<String>builder()
-                .message("Uploaded video file successfully.")
+                .message("Uploaded file successfully.")
                 .result(fileStorageService.save(file))
-                .build();
-    }
-
-    // --- ENDPOINT THÊM MỚI: Upload file audio mẫu ---
-    @PostMapping("/upload-audio")
-    public ApiResponse<String> uploadAudio(
-            @RequestParam("file") MultipartFile file) {
-        return ApiResponse.<String>builder()
-                .message("Uploaded audio file successfully.")
-                .result(fileStorageService.saveAudio(file))
                 .build();
     }
 
@@ -84,7 +80,7 @@ public class VideoJobController {
             @PathVariable Long id) {
         VideoJobResponse job = videoJobService.getJobById(currentUserId(), id);
 
-        if (!"DONE".equals(job.getStatus()) || job.getOutputPath() == null)
+        if (job.getStatus() != VideoJobStatus.FINISHED || job.getOutputPath() == null)
             throw new AppException(ErrorCode.JOB_NOT_READY);
 
         File file = new File(job.getOutputPath());
@@ -97,5 +93,46 @@ public class VideoJobController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
                 .contentType(org.springframework.http.MediaType.parseMediaType("video/mp4"))
                 .body(resource);
+    }
+
+    @GetMapping("/{id}/subtitle")
+    public ApiResponse<List<SubtitleItem>> getSubtitle(@PathVariable Long id) {
+        VideoJobResponse job = videoJobService.getJobById(currentUserId(), id);
+
+        if (job.getStatus() != VideoJobStatus.SUB_READY || job.getWorkDir() == null)
+            throw new AppException(ErrorCode.JOB_NOT_READY);
+
+        return ApiResponse.<List<SubtitleItem>>builder()
+                .message("Subtitle retrieved successfully.")
+                .result(subtitleService.readSubtitle(job.getWorkDir()))
+                .build();
+    }
+
+    @PutMapping("/{id}/subtitle")
+    public ApiResponse<Void> updateSubtitle(@PathVariable Long id, @RequestBody List<SubtitleItem> lines) {
+        VideoJobResponse job = videoJobService.getJobById(currentUserId(), id);
+
+        if (job.getStatus() != VideoJobStatus.SUB_READY || job.getWorkDir() == null)
+            throw new AppException(ErrorCode.JOB_NOT_READY);
+
+        subtitleService.writeSubtitle(job.getWorkDir(), lines);
+
+        return ApiResponse.<Void>builder()
+                .message("Subtitle updated successfully.")
+                .build();
+    }
+
+    @PostMapping("/{id}/continue-dub")
+    public ApiResponse<Void> continueDub(@PathVariable Long id) {
+        VideoJobResponse job = videoJobService.getJobById(currentUserId(), id);
+
+        if (job.getStatus() != VideoJobStatus.SUB_READY)
+            throw new AppException(ErrorCode.JOB_NOT_READY);
+
+        jobPollerScheduler.continueDubStage(id);
+
+        return ApiResponse.<Void>builder()
+                .message("Continuing dub stage.")
+                .build();
     }
 }

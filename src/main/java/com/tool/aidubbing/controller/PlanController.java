@@ -1,6 +1,6 @@
 package com.tool.aidubbing.controller;
 
-import com.tool.aidubbing.dto.request.PlanRequest;
+import com.tool.aidubbing.dto.PlanRequest;
 import com.tool.aidubbing.dto.response.ApiResponse;
 import com.tool.aidubbing.dto.response.PlanResponse;
 import com.tool.aidubbing.service.PlanService;

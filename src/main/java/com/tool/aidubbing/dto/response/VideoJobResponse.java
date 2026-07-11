@@ -1,5 +1,6 @@
 package com.tool.aidubbing.dto.response;
 
+import com.tool.aidubbing.enums.VideoJobStatus;
 import com.tool.aidubbing.enums.VoiceType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,7 +16,7 @@ public class VideoJobResponse {
     Long id;
     String title;
     String sourceType;
-    String status;
+    VideoJobStatus status;
     String targetLang;
     Boolean isShort;
     String outputPath;
@@ -24,6 +25,7 @@ public class VideoJobResponse {
     VoiceType voiceType;
     String promptExtra;
     String referenceAudioPath;
+    String workDir;
     Instant createdAt;
     Instant finishedAt;
 }

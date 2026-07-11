@@ -1,5 +1,6 @@
 package com.tool.aidubbing.entity;
 
+import com.tool.aidubbing.enums.VideoJobStatus;
 import com.tool.aidubbing.enums.VoiceType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -32,8 +33,8 @@ public class VideoJob {
     @Column(name = "output_path")
     String outputPath;
 
-    @Column(nullable = false)
-    String status = "PENDING";
+    @Enumerated(EnumType.STRING)
+    VideoJobStatus status;
 
     @Column(name = "target_lang")
     String targetLang;
@@ -55,6 +56,9 @@ public class VideoJob {
 
     @Column(name = "reference_audio_path")
     String referenceAudioPath;
+
+    @Column(name = "work_dir")
+    String workDir;
 
     @Column(name = "is_short")
     Boolean isShort = false;

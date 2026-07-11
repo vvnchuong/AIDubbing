@@ -14,6 +14,9 @@ public enum ErrorCode {
 
     JOB_NOT_FOUND(3001, "Job not found.", HttpStatus.NOT_FOUND),
     JOB_NOT_READY(3002, "Job not ready.", HttpStatus.BAD_REQUEST),
+    SUBTITLE_NOT_FOUND(3003, "Không tìm thấy file phụ đề.", HttpStatus.NOT_FOUND),
+    SUBTITLE_MISMATCH(3004, "File phụ đề gốc và bản dịch không khớp số dòng.", HttpStatus.INTERNAL_SERVER_ERROR),
+    SUBTITLE_WRITE_FAILED(3005, "Không ghi được file phụ đề.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     QUOTA_EXCEEDED(4001, "Quota exceeded.", HttpStatus.BAD_REQUEST),
     INVALID_VIDEO_FILE(4002, "Invalid video file format or size.", HttpStatus.BAD_REQUEST),
